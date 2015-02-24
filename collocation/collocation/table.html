@@ -1,0 +1,20 @@
+<form action=/ method=post>
+{%csrf_token%}
+{{form}}
+<input type=submit>
+</form>
+
+<table>
+<tr>
+
+<td>
+{% for c,freq in freq %}
+{{c}}{{freq}}<br>
+{% endfor %}
+</td>
+
+<td>
+{% for c,dice in dice %}
+{{c}}{{dice}}<br>
+{% endfor %}
+</td>
