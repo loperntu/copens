@@ -1,10 +1,14 @@
+#-*-coding:utf8-*-
 from urllib import urlopen
-url1='http://xkcd.com/353'
-url2='http://xkcd.com/554'
 def get_page(url):
-	#if url in [url1,url2]:
-	return urlopen(url).read()
-	return ''
+	try:
+		output=''
+		page=urlopen(url).read().decode('utf8')
+		for c in page:
+			if c>=u'一':output+=c
+		print output
+		return page
+	except:return ''
 def get_next_target(page):
 	start_link=page.find('<a href=')
 	if start_link==-1:return None,0
@@ -17,7 +21,7 @@ def get_all_links(page):
 	while 1:
 		url,end_quote=get_next_target(page)
 		if url:
-			if url[:4]=='http':links.append(url.strip('/'))
+			if url[:4]=='http' and url.find('tw')>0:links.append(url.strip('/'))
 			page=page[end_quote:]
 		else:break
 	return links
@@ -27,10 +31,10 @@ def crawl_web(seed):
 	while tocrawl:
 		link=tocrawl.pop()
 		if link not in crawled:
+			print link
+			crawled+=[link]
+			if len(crawled)>9:break
 			tocrawl+=get_all_links(get_page(link))
 			crawled+=[link]
-		if len(crawled)>9:break
 	return crawled
-
-for link in crawl_web('http://tw.yahoo.com'):
-	print link
+crawl_web('http://tw.yahoo.com')
