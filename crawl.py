@@ -37,4 +37,9 @@ def crawl_web(seed):
 			tocrawl+=get_all_links(get_page(link))
 			crawled+=[link]
 	return crawled
-crawl_web('http://tw.yahoo.com')
+urls=open('crawled.url').readlines()
+for url in urls:
+	f=open('crawled.url','a')
+	f.write('yahoo.com\n')
+	f.close()
+#crawl_web('http://tw.yahoo.com')
