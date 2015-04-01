@@ -1,14 +1,16 @@
 #-*-coding:utf8-*-
 from urllib import urlopen
+from bs4 import BeautifulSoup
+from codecs import open
 def get_page(url):
 	try:
-		output=''
 		page=urlopen(url).read().decode('utf8')
-		for c in page:
-			if c>=u'一':output+=c
-		print output
-		return page
-	except:return ''
+		f=open('chinese.txt','a','utf8')
+		for line in BeautifulSoup(page).get_text().split():
+			if line[0]>u'一':f.write(line+'\n')
+		f.close()
+		return page,1
+	except:return '',0
 def get_next_target(page):
 	start_link=page.find('<a href=')
 	if start_link==-1:return None,0
@@ -25,21 +27,29 @@ def get_all_links(page):
 			page=page[end_quote:]
 		else:break
 	return links
-def crawl_web(seed):
-	tocrawl=[seed]
-	crawled=[]
+def crawl_web():
+	tocrawl=[url.strip() for url in open('tocrawl.url','r','utf8')]
+	crawled=[url.strip() for url in open('crawled.url','r','utf8')]
+	print tocrawl
+	print crawled
 	while tocrawl:
 		link=tocrawl.pop()
 		if link not in crawled:
-			print link
+#			print link
+	#		if len(crawled)>9:break
+			page,chinese=get_page(link)
+			tocrawl+=get_all_links(page)
 			crawled+=[link]
-			if len(crawled)>9:break
-			tocrawl+=get_all_links(get_page(link))
-			crawled+=[link]
-	return crawled
-urls=open('crawled.url').readlines()
-for url in urls:
-	f=open('crawled.url','a')
-	f.write('yahoo.com\n')
-	f.close()
-#crawl_web('http://tw.yahoo.com')
+			if chinese:break
+
+	c=open('crawled.url','w','utf8')
+	for link in crawled:c.write(link+'\n')
+	c.close()
+
+	t=open('tocrawl.url','w','utf8')
+	for link in tocrawl:
+		print link
+		t.write(link+'\n')
+	t.close()
+
+crawl_web()
