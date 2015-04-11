@@ -1,6 +1,7 @@
 <form action=/ method=post>
-{% csrf_token %}
-<input name=code value='result={{code}}'>
+{%csrf_token%}
+<input name=data value={{data}}>
+<input name=code value={{code}}>
 <input type=submit>
 </form>
 {{result}}
