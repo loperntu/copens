@@ -1,3 +1,4 @@
+#-*-coding:utf8-*-
 from django.http import HttpResponse
 from django.template import RequestContext,loader
 from django.shortcuts import render
@@ -14,10 +15,21 @@ def home(request):
 	if request.method=='POST':
 		form=CodeForm(request.POST)
 		if form.is_valid():
-			data0=form.cleaned_data['data']
-			data=[float(x) for x in data0.split(',')]
+			data=form.cleaned_data['data']
 			code=form.cleaned_data['code']
-			exec 'result='+code
-			return render(request,'template.html',{'data':data0,'code':code,'result':result})
+			d=dict()
+			for line in data.split('\n'):
+				city,rank=line.split(',')
+				d[city]=int(rank)
+			sort=sorted(d.items(),key=lambda (k,v):(v,k))
+			exec code
+			return render(request,'template.html',{'data':data,'code':code,'result':output})
 	form=CodeForm()
-	return render(request,'template.html',{'form':form,'data':'2015,4,11','code':'sum(data[:2])'})
+	return render(request,'template.html',{
+'form':form,
+'data':'Singapore,1\nSeoul,9',
+'code':'''
+output=""
+for country,rank in sort:
+    output+=country+" ranks "+str(rank)+". "
+'''})
