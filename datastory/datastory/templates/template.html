@@ -1,7 +1,7 @@
 <form action=/ method=post>
 {%csrf_token%}
-<textarea name=data rows=9 cols=40>{{data}}</textarea>
-<textarea name=code rows=9 cols=50>{{code}}</textarea>
+<textarea name=data rows=9 cols=40 maxlength=999>{{data}}</textarea>
+<textarea name=code rows=9 cols=50 maxlength="999">{{code}}</textarea>
 <input type=submit>
 </form>
 {{result}}
