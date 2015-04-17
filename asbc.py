@@ -10,7 +10,6 @@ for directory in ['ASBC_A','ASBC_B']:
 			if start_sentence==-1:continue
 			end_sentence=line.find('</sentence>')
 			sentence=line[start_sentence+10:end_sentence]
-			print sentence.encode('utf8')
 			no_pos=sub(pattern='\([A-z].*?\)',repl='',string=sentence).split(u'　')
 			for word in no_pos[:-1]:
 				print word[0].encode('utf8')+'/B',
